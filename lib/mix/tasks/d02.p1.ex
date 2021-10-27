@@ -5,7 +5,19 @@ defmodule Mix.Tasks.D02.P1 do
 
   @shortdoc "Day 02 Part 1"
   def run(args) do
-    input = nil
+    input =
+      "inputs/day_02.txt"
+      |> File.stream!([], :line)
+      |> Stream.map(&String.trim/1)
+      |> Stream.map(&String.split(&1, ~r/[-: ]/, trim: true))
+      |> Enum.map(fn [a, b, c, d] ->
+        %{
+          min: String.to_integer(a),
+          max: String.to_integer(b),
+          char: Enum.at(String.to_charlist(c), 0),
+          password: d
+        }
+      end)
 
     if Enum.member?(args, "-b"),
       do: Benchee.run(%{part_1: fn -> input |> part1() end}),
